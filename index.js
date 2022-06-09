@@ -1,18 +1,33 @@
 import express from "express";
 import multer from "multer";
+import fs from "fs";
 import ejs from "ejs";
 import path from "path";
-import { ListBucketsCommand } from "@aws-sdk/client-s3";
+import { ListBucketsCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client, rekoClient } from "./helper.js"; // Helper function that creates an Amazon S3 service client module.
 import { RecognizeCelebritiesCommand } from "@aws-sdk/client-rekognition";
 import { fileURLToPath } from "url";
+import { Console } from "console";
 
 const upload = multer({ dest: "uploads/" });
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const run = async () => {
+const BUCKET_NAME = "workshoprekobucket";
+
+const uploadFile = (path, name) => {
+    const fileContent = fs.readFileSync(path);
+    return s3Client.send(
+        new PutObjectCommand({
+            Bucket: BUCKET_NAME,
+            Key: name,
+            Body: fileContent,
+        })
+    );
+};
+
+const run = async () => {
     try {
         const data = await s3Client.send(new ListBucketsCommand({}));
         console.log("Success", data.Buckets);
@@ -22,28 +37,22 @@ export const run = async () => {
     }
 };
 
-//run();
-
-const bucket = "workshoprekobucket";
 const barak = "Barack-Obama-Speech-3819398190.jpg";
 const selfie = "selfie.jpg";
 
 const photo = selfie;
 
-// Set params
-const params = {
-    Image: {
-        S3Object: {
-            Bucket: bucket,
-            Name: photo,
-        },
-    },
-};
-
 const recognize_celebrity = async () => {
     try {
         const response = await rekoClient.send(
-            new RecognizeCelebritiesCommand(params)
+            new RecognizeCelebritiesCommand({
+                Image: {
+                    S3Object: {
+                        Bucket: BUCKET_NAME,
+                        Name: photo,
+                    },
+                },
+            })
         );
         console.log(response.Labels);
         response.CelebrityFaces.forEach((celebrity) => {
@@ -60,8 +69,6 @@ const recognize_celebrity = async () => {
         console.log("Error", err);
     }
 };
-
-//recognize_celebrity();
 
 const app = express();
 const port = 3000;
@@ -118,9 +125,19 @@ const pictures = [
 app.get("/add", (req, res) => {
     res.render("add");
 });
-app.post("/add", upload.single('picture'),(req, res, next) => {
-   console.log(req.picture)
-   res.render("add",{status: "ok"})
+app.post("/add", upload.single("picture"), async (req, res, next) => {
+    console.log(req.file);
+    try {
+        console.log("try to upload to s3....");
+        const resultat = await uploadFile(req.file.path, req.file.originalname);
+
+        
+        console.log("S3 response",resultat)
+        res.render("add", { status: "0" });
+    } catch (err) {
+        console.error("Faild to upload to s3", err);
+        res.render("add", { status: "1" });
+    }
 });
 app.get("/", (req, res) => {
     res.render("home", { pictures });
