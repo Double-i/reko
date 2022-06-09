@@ -16,12 +16,14 @@
     </head>
     <body>
         <%- include('navbar.html') %>
-       <form action="/add" method="post" enctype="multipart/form-data">
- 
-            <input type="file" name="picture" />
-            <input type="submit" />
-
-       </form>
+       
+        <div class="container mt-5">
+            <h2>Ajouter une image</h2>
+            <form class="mt-5" action="/add" method="post" enctype="multipart/form-data">
+                <input type="file" name="picture" />
+                <input type="submit" />
+            </form>
+        </div>
     </body>
     <!-- JavaScript Bundle with Popper -->
     <script

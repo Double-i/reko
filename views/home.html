@@ -16,9 +16,20 @@
     </head>
     <body>
         <%- include('navbar.html') %>
-        <div class="d-flex justify-content-center gap-4 flex-wrap">
-            <% pictures.forEach(function(picture){ %> <%-
-            include('photocard.html', {picture}) %> <% }) %>
+        <div class="container  mt-5">
+            <h2>Gallerie</h2>
+            <% if (pictures.length > 0) { %>
+                <div class="d-flex justify-content-center gap-4 flex-wrap">
+
+                
+                <% pictures.forEach(function(picture){ %> <%-
+                    include('photocard.html', {picture}) %> <% }) %>    
+                </div>
+            <%} else { %>
+                <h5> Aucun résultat </h5>
+            <% } %>
+
+           
         </div>
     </body>
     <!-- JavaScript Bundle with Popper -->

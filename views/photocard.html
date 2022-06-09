@@ -3,7 +3,7 @@
     <div class="card-body">
         <p class="card-text">
             <% picture.celebrities.forEach(function(celebrity){ %>
-                <li><%= celebrity.name %></li>
+                <li><%= celebrity.Name %> ( <%= Math.round(celebrity.MatchConfidence)  %>% )</li>
             <% }) %>
         </p>
     </div>
