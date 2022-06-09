@@ -12,13 +12,12 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3Client, rekoClient } from "./helper.js"; // Helper function that creates an Amazon S3 service client module.
 import { RecognizeCelebritiesCommand } from "@aws-sdk/client-rekognition";
 import { fileURLToPath } from "url";
+import { REGION, BUCKET_NAME } from "./s3info.js";
 const upload = multer({ dest: "uploads/" });
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const BUCKET_NAME = "workshoprekobucket";
-const REGION = "eu-central-1";
 
 const pictures = []; // db ...
 
