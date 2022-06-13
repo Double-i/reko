@@ -16,10 +16,19 @@
     </head>
     <body>
         <%- include('navbar.html') %>
-       
+
         <div class="container mt-5">
             <h2>Ajouter une image</h2>
-            <form class="mt-5" action="/add" method="post" enctype="multipart/form-data">
+            <% if (success == 0) { %>
+            <div class="alert alert-success" role="alert">Merci pour ta contribution au paparazzi heaven</div>
+
+            <%}%>
+            <form
+                class="mt-5"
+                action="/add"
+                method="post"
+                enctype="multipart/form-data"
+            >
                 <input type="file" name="picture" />
                 <input type="submit" />
             </form>

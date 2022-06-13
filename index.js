@@ -116,7 +116,7 @@ app.set("view engine", "html");
  * GET add picture form endpoint
  */
 app.get("/add", (req, res) => {
-    res.render("add");
+    res.render("add",{success: 1});
 });
 
 /**
@@ -135,10 +135,10 @@ app.post("/add", upload.single("picture"), async (req, res, next) => {
         });
         saveToJson(pictures);
         console.log("POST /add succeed");
-        res.render("add", { status: "0" });
+        res.render("add", { success: 0 });
     } catch (err) {
         console.error("POST /add failed", err);
-        res.render("add", { status: "1" });
+        res.render("add", { success: "1" });
     }
 });
 
